@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Análise de Perfil · Robert Resende</title>
+<style>
+  :root{
+    --bg:#0a0b0f; --panel:rgba(21,25,32,.82); --panel2:rgba(28,33,43,.7); --line:rgba(255,255,255,.09);
+    --tx:#f0f3f8; --tx2:#a3adbf; --tx3:#6f788b;
+    --gold:#c9a227; --gold2:#e8c766;
+    /* Acento vivo: o app troca estas duas conforme a skin do resultado. */
+    --ac:#c9a227; --ac2:#e8c766; --ac-rgb:201,162,39;
+  }
+  :root,.fundo::after,.selo,.cta,.res,.nota,.skin,h1 em,.sec h3,
+  ul.lista li::before,ol.passos li::before,.tk-intro{transition:all .7s ease}
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    background:var(--bg); color:var(--tx); min-height:100vh;
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- fundo ---- */
+  .fundo{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg)}
+  /* A foto do Robert entra aqui: basta trocar o src de #foto-fundo */
+  .fundo img{
+    width:100%;height:100%;object-fit:cover;object-position:center 18%;
+    opacity:.22;filter:grayscale(.35) contrast(1.05);
+  }
+  .fundo::after{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(90rem 55rem at 50% -12%, rgba(var(--ac-rgb),.18), transparent 60%),
+      radial-gradient(60rem 40rem at 85% 95%, rgba(var(--ac-rgb),.09), transparent 65%),
+      linear-gradient(180deg, rgba(10,11,15,.55) 0%, rgba(10,11,15,.82) 42%, var(--bg) 88%);
+  }
+
+  .wrap{max-width:640px;margin:0 auto;padding:46px 20px 70px;position:relative}
+
+  /* ---- topo ---- */
+  header{text-align:center;margin-bottom:34px}
+  .selo{
+    display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ac2);
+    border:1px solid rgba(var(--ac-rgb),.34);border-radius:30px;padding:7px 16px;
+    background:rgba(var(--ac-rgb),.08);margin-bottom:18px;
+    box-shadow:0 0 22px rgba(var(--ac-rgb),.18);
+  }
+  header h1{font-size:clamp(30px,7vw,40px);font-weight:800;letter-spacing:-.035em;line-height:1.1}
+  header h1 em{font-style:normal;color:var(--ac);text-shadow:0 0 26px rgba(var(--ac-rgb),.5)}
+  header p{color:var(--tx2);font-size:15px;margin-top:12px;max-width:26em;margin-inline:auto}
+  header .assin{color:var(--tx3);font-size:13px;margin-top:14px;font-style:italic}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  }
+
+  /* ---- entrada ---- */
+  .entrada{padding:20px}
+  .seg{display:flex;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-bottom:16px}
+  .seg button{flex:1;background:none;border:0;color:var(--tx2);padding:12px;border-radius:9px;font:650 15px inherit;cursor:pointer;transition:.15s}
+  .seg button.on{background:linear-gradient(180deg,var(--ac2),var(--ac));color:#1c1503;box-shadow:0 2px 14px rgba(var(--ac-rgb),.3)}
+  .seg.modos{margin-bottom:10px}
+  .seg.modos button{font-weight:800}
+
+  .drop{border:2px dashed rgba(255,255,255,.14);border-radius:15px;padding:40px 20px;text-align:center;
+    color:var(--tx3);font-size:15px;cursor:pointer;transition:.18s;background:rgba(0,0,0,.2)}
+  .drop:hover,.drop.over{border-color:var(--ac);color:var(--tx2);background:rgba(var(--ac-rgb),.07)}
+  .drop .ico{font-size:32px;display:block;margin-bottom:12px;opacity:.85}
+  .drop b{color:var(--ac2)}
+
+  .thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .thumb{position:relative;width:80px;height:80px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb button{position:absolute;top:3px;right:3px;width:21px;height:21px;border-radius:50%;
+    background:rgba(0,0,0,.72);color:#fff;border:0;font-size:13px;line-height:1;cursor:pointer;padding:0}
+
+  .cta{width:100%;margin-top:18px;border:0;border-radius:14px;padding:20px;cursor:pointer;
+    background:linear-gradient(180deg,var(--ac2),var(--ac));color:#1c1503;
+    font:800 17px inherit;letter-spacing:.09em;text-transform:uppercase;
+    box-shadow:0 8px 30px rgba(var(--ac-rgb),.38);}
+  .cta:hover{transform:translateY(-1px);box-shadow:0 14px 40px rgba(var(--ac-rgb),.55)}
+  .cta:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
+
+  #aviso{margin-top:14px;font-size:14px;color:var(--tx3);text-align:center;line-height:1.55}
+  #aviso.erro{color:#f0837f}
+
+  /* ---- resultado ---- */
+  .res{display:none;margin-top:22px}
+  .res.on{display:block;animation:sobe .45s ease both;
+    box-shadow:0 0 70px rgba(var(--ac-rgb),.2), 0 0 0 1px rgba(var(--ac-rgb),.16)}
+  @keyframes sobe{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .res-top{padding:34px 24px 28px;text-align:center;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(var(--ac-rgb),.12),transparent)}
+  .nota{font-size:82px;font-weight:800;line-height:.95;letter-spacing:-.05em;font-variant-numeric:tabular-nums;
+    text-shadow:0 0 44px rgba(var(--ac-rgb),.55)}
+  .nota small{font-size:26px;color:var(--tx3);font-weight:600;letter-spacing:0}
+  .skin{margin-top:14px;display:inline-block;font-size:13px;font-weight:800;text-transform:uppercase;
+    letter-spacing:.13em;padding:8px 18px;border-radius:30px;
+    box-shadow:0 0 26px rgba(var(--ac-rgb),.35)}
+  .vered{margin-top:16px;color:var(--tx2);font-size:15px;line-height:1.6;max-width:30em;margin-inline:auto}
+
+  .sec{padding:24px;border-bottom:1px solid var(--line)}
+  .sec:last-child{border-bottom:0}
+  .sec h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.15em;color:var(--ac2);
+    font-weight:800;margin-bottom:14px}
+  .analise{font-size:15.5px;line-height:1.7;white-space:pre-wrap}
+
+  ul.lista{list-style:none}
+  ul.lista li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:15px;line-height:1.55}
+  ul.lista li:last-child{border-bottom:0}
+  ul.lista li::before{content:'';flex:none;width:7px;height:7px;border-radius:50%;
+    background:var(--ac);margin-top:9px;box-shadow:0 0 0 3px rgba(var(--ac-rgb),.18),0 0 12px rgba(var(--ac-rgb),.5)}
+  ul.lista li b{color:var(--ac2);font-weight:650}
+
+  .tk-intro{color:var(--tx2);font-size:14.5px;line-height:1.65;margin-bottom:14px;
+    border-left:2px solid var(--ac);padding-left:13px;font-style:italic}
+  ol.passos{list-style:none;counter-reset:p}
+  ol.passos li{counter-increment:p;display:flex;gap:13px;padding:11px 0;
+    border-bottom:1px solid rgba(255,255,255,.05);font-size:15px;line-height:1.55}
+  ol.passos li:last-child{border-bottom:0}
+  ol.passos li::before{content:counter(p);flex:none;width:25px;height:25px;border-radius:50%;
+    background:rgba(var(--ac-rgb),.16);border:1px solid rgba(var(--ac-rgb),.36);color:var(--ac2);
+    font:800 12px inherit;display:grid;place-items:center;margin-top:1px}
+
+  .bar{margin-top:12px}
+  .bar:first-child{margin-top:0}
+  .bar-l{display:flex;justify-content:space-between;font-size:12.5px;color:var(--tx2);margin-bottom:5px}
+  .bar-l b{color:var(--tx);font-variant-numeric:tabular-nums}
+  .bar-t{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden}
+  .bar-f{height:100%;border-radius:3px}
+  .obs{margin-top:15px;font-size:13px;color:var(--tx3);line-height:1.6}
+
+  .rodape{display:flex;gap:10px;padding:20px 24px}
+  .rodape button{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--tx2);
+    border-radius:11px;padding:14px;font:650 14.5px inherit;cursor:pointer;transition:.15s}
+  .rodape button:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+
+</style>
+</head>
+<body>
+
+<div class="fundo">
+  <!-- Foto do Robert: troque o src por ex. "roberth.jpg" -->
+  <img id="foto-fundo" alt="" src="" onerror="this.style.display='none'">
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="selo">★ Método Robert Resende</div>
+    <h1><span id="titulo">Análise de </span><em id="titulo-em">Perfil</em></h1>
+    <p id="subtitulo"></p>
+    <p class="assin">"Eu não dou as minhas opiniões aqui. Eu só explico como o mundo funciona."</p>
+  </header>
+
+  <div class="card entrada">
+    <div class="seg modos" id="modo">
+      <button data-m="profissional" class="on">Profissional</button>
+      <button data-m="beleza">Beleza</button>
+    </div>
+
+    <div class="seg" id="genero">
+      <button data-g="F" class="on">Mulher</button>
+      <button data-g="M">Homem</button>
+    </div>
+
+    <div class="drop" id="drop">
+      <span class="ico">📸</span>
+      Arraste suas fotos ou <b>toque para escolher</b>
+      <input type="file" id="arquivos" accept="image/*" multiple hidden>
+    </div>
+    <div class="thumbs" id="thumbs"></div>
+
+    <button class="cta" id="analisar">Robert Analisar</button>
+    <div id="aviso"></div>
+  </div>
+
+  <div class="res card" id="res">
+    <div class="res-top">
+      <div class="nota" id="nota">—</div>
+      <div class="skin" id="skin"></div>
+      <div class="vered" id="vered"></div>
+    </div>
+
+    <div class="sec">
+      <h3 id="tk-visto-h3">O que o Robert viu</h3>
+      <div class="analise" id="txt"></div>
+    </div>
+
+    <div class="sec" id="sec-melhorias">
+      <h3>Suas melhorias</h3>
+      <ul class="lista" id="melhorias"></ul>
+    </div>
+
+    <div class="sec" id="sec-tiktok">
+      <h3 id="tk-titulo"></h3>
+      <div class="tk-intro" id="tk-intro"></div>
+      <ol class="passos" id="tk-passos"></ol>
+    </div>
+
+    <div class="sec">
+      <h3>Como a nota foi calculada</h3>
+      <div id="barras"></div>
+      <div class="obs" id="obs"></div>
+    </div>
+
+    <div class="rodape">
+      <button id="copiar">Copiar análise</button>
+      <button id="nova">Analisar outro</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="criterios.js"></script>
+<script src="motor.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
